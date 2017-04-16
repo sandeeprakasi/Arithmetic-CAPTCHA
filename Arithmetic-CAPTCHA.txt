@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -40,9 +41,8 @@
 	</div>
 
 	<div class="row" >
-		<input class="form-control"  type="text" style="margin:10px 0px;width: 16%" placeholder="Enter Answer Here" id="usrAnswers">
+		<input class="form-control"  type="text" style="margin:10px 0px;width: 10%" placeholder="Enter Answer Here" id="usrAnswers">
 		<input class="btn btn-default"  type="button" onclick="getAnswer()" value="submit">
-
 		<input class="btn btn-default"  type="button" onclick="draw()" value="reload captcha">
 		
 	</div>
@@ -59,12 +59,12 @@
     border-collapse: collapse;
 }
 th, td {
-    border: solid 1px #CCC;
+    border: solid 0px #CCC;
     padding: 10px;
 }
 .fixed {
-   width: 61px;
-    height: 61px;
+   width: 20px;
+    height: 20px;
     
 }
 
@@ -78,19 +78,17 @@ var anscell=[];
 var queInt
 $(document).ready(function() {
  questions=[
+		
 				{
-					question:"add ",
+					question:"Perform addition operation on the following positioned images ",
 					operation:"+"
 					
 				},
 				{
-					question:"add ",
-					operation:"+"
-				},
-				{
-					question:"multiple ",
-					operation:"*"
+					question:"Perform subtraction operation on the following positioned images ",
+					operation:"-"
 				}
+				
 			]
 draw();
 
@@ -126,9 +124,19 @@ function assignValuesTotable(){
 
 
 		var ctxImg = $("#"+k+"");
+		var canvas = document.getElementById('canvas');
 		var ctx = ctxImg[0].getContext('2d');
 		var integer=Math.floor(Math.random()*99);
-		ctx.font = "20px Monospace";
+		var a = Math.floor(Math.random()*35);
+		ctx.font = "70px MOnospace";
+		ctx.rotate(a*Math.PI/180);
+		ctx.fillStyle = 'hsl(' + 360 * Math.random() + ', 50%, 50%)';
+		//ctx.fillStyle = "rgb(200,0,0)";
+		ctx.fillRect(28, 2, 25, 50);
+		ctx.strokeStyle = 'hsl(' + 360 * Math.random() + ', 50%, 50%)';
+		//ctx.strokeStyle = 'white';
+		ctx.strokeRect(30,3,150,80);
+		//ctx.splitRect(1,1,1,5);
 		ctx.fillText(integer, 7, 40);
 		$("#"+k+"").attr("value",integer);
 
@@ -149,7 +157,7 @@ function getQuestions(){
 	var x=questions[queInt].question;
 
 
-	for(j=0;j<3;j++){
+	for(j=0;j<2;j++){
 		
 		var Calinteger=Math.floor(Math.random()*9)+1;
 		anscell.push(Calinteger);
@@ -169,23 +177,30 @@ function getAnswer(){
 
 	for(j=0;j<anscell.length;j++){
 
-		if(questions[queInt].operation=="+"){
+		if(j>0||questions[queInt].operation=="+"){
 			corctAns +=	parseInt($("#"+anscell[j]+"").attr("value"));
 
-		}else if(questions[queInt].operation=="*"){
-			corctAns *=	parseInt($("#"+anscell[j]+"").attr("value"));
+		}else
+		 if(j==0&&questions[queInt].operation=="-"){
+			//alert (anscell[j]);
+			corctAns -=	parseInt($("#"+anscell[j]+"").attr("value"));
+			//alert("corrct "+corctAns);
 		}
 
 	}
 
+corctAns= Math.abs(corctAns);
+
 	if(corctAns == parseInt(ans) ){
-			alert("yes");
+			alert("redirecting........");
+	window.location.href = "https://www.cmich.edu/lifeatcmu";
 			$("#usrAnswers").val("");
 	}else{
-		alert("No");
+		alert("Entered Captcha is Wrong\nTry again");
 		$("#usrAnswers").val("");
+		draw();
 	}
+	
 }
-
 	
 </script>
