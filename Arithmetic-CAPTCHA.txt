@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	 <title>captcha</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src=' https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.15.1/jquery.validate.js'></script>
+</head>
+<body >
+<div class="container">
+	<div class="row">
+		<h4 id="questionDisplay"></h4>
+		<table id="table">
+		    <tbody>
+		        <tr>
+		            <td class="fixed" ></td>
+		            <td   class="fixed"></td>
+		            <td  class="fixed"></td>
+		        </tr>
+		        <tr>
+		            <td  class="fixed"></td>
+		            <td  class="fixed"></td>
+		            <td  class="fixed"></td>
+		        </tr>
+		        <tr>
+		            <td  class="fixed"></td>
+		            <td  class="fixed"></td>
+		            <td  class="fixed"></td>
+		        </tr>
+		    </tbody>
+		</table>
+		
+	</div>
+
+	<div class="row" >
+		<input class="form-control"  type="text" style="margin:10px 0px;width: 16%" placeholder="Enter Answer Here" id="usrAnswers">
+		<input class="btn btn-default"  type="button" onclick="getAnswer()" value="submit">
+
+		<input class="btn btn-default"  type="button" onclick="draw()" value="reload captcha">
+		
+	</div>
+	
+
+	
+
+</div>
+
+</body>
+</html>
+<style type="text/css">
+	table {
+    border-collapse: collapse;
+}
+th, td {
+    border: solid 1px #CCC;
+    padding: 10px;
+}
+.fixed {
+   width: 61px;
+    height: 61px;
+    
+}
+
+</style>
+<script type="text/javascript">
+var questions
+var anscell
+var operation
+var arrayImage=[];
+var anscell=[];
+var queInt
+$(document).ready(function() {
+ questions=[
+				{
+					question:"add ",
+					operation:"+"
+					
+				},
+				{
+					question:"add ",
+					operation:"+"
+				},
+				{
+					question:"multiple ",
+					operation:"*"
+				}
+			]
+draw();
+
+});
+
+function draw() {
+
+
+	$.each($("#table td"), function (p) {
+
+		if($(this).children().length != 0 ){
+			$(this).children().remove();
+		}
+
+		if($(this).children().length == 0){
+			p++
+	    	$("<canvas id="+ p +"></canvas>").appendTo(this);
+	    	console.log(this)
+
+		}
+
+		
+	});
+
+
+	
+	assignValuesTotable();
+	getQuestions();
+}
+
+function assignValuesTotable(){
+	for(k=1;k<10;k++){
+
+
+		var ctxImg = $("#"+k+"");
+		var ctx = ctxImg[0].getContext('2d');
+		var integer=Math.floor(Math.random()*99);
+		ctx.font = "20px Monospace";
+		ctx.fillText(integer, 7, 40);
+		$("#"+k+"").attr("value",integer);
+
+			
+	}
+
+
+}
+
+function getQuestions(){
+
+	$("#questionDisplay").html("");
+	anscell=[];
+
+	queInt=Math.floor(Math.random()*questions.length);
+	questions[queInt];
+
+	var x=questions[queInt].question;
+
+
+	for(j=0;j<3;j++){
+		
+		var Calinteger=Math.floor(Math.random()*9)+1;
+		anscell.push(Calinteger);
+		
+		$("#questionDisplay").html(x+=Calinteger+",");
+		questions[queInt].cells=anscell;
+
+	}
+	$("#usrAnswers").val("");
+
+}
+
+function getAnswer(){
+
+	var corctAns=0;
+	var ans=$("#usrAnswers").val();
+
+	for(j=0;j<anscell.length;j++){
+
+		if(questions[queInt].operation=="+"){
+			corctAns +=	parseInt($("#"+anscell[j]+"").attr("value"));
+
+		}else if(questions[queInt].operation=="*"){
+			corctAns *=	parseInt($("#"+anscell[j]+"").attr("value"));
+		}
+
+	}
+
+	if(corctAns == parseInt(ans) ){
+			alert("yes");
+			$("#usrAnswers").val("");
+	}else{
+		alert("No");
+		$("#usrAnswers").val("");
+	}
+}
+
+	
+</script>
